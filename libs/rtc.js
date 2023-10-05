@@ -30,14 +30,14 @@ export default class RTC {
     }
   }
 
-  static getID = async roomID => {
+  static getID = async (roomID) => {
     // Need to rewrite with loops
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       var peerNumber = 0;
       var tryCreateId = () => {
         var tryId = `${roomID}-${peerNumber}`;
         var peer = new Peer(tryId, signalingServer);
-        var errorFn = e => {
+        var errorFn = (e) => {
           if (e.type === "unavailable-id") {
             peer.destroy();
             peerNumber++;
@@ -58,18 +58,18 @@ export default class RTC {
 
   static connectToPeers(roomID) {
     fetch(`/peerjs/${roomID}`)
-      .then(function(response) {
+      .then(function (response) {
         if (response.status >= 400) {
           throw new Error("Bad response from server");
         }
         return response.json();
       })
-      .then(function(channelPeers) {
-        channelPeers.forEach(tryId => {
+      .then(function (channelPeers) {
+        channelPeers.forEach((tryId) => {
           if (tryId !== peer.id && typeof connections[tryId] === "undefined") {
             console.log("Trying to connect to", tryId);
             var conn = peer.connect(tryId, {
-              reliable: true
+              reliable: true,
             });
             RTC.onConnection(conn);
           }
@@ -92,7 +92,7 @@ export default class RTC {
         connections[conn.peer] = conn;
         console.log(`[RTC] connected to ${conn.peer}`);
         events.emit("peerJoined", {
-          connection: conn
+          connection: conn,
         });
       } else {
         connections[conn.peer] = conn;
@@ -103,20 +103,20 @@ export default class RTC {
       if (connections[conn.peer]) {
         delete connections[conn.peer];
         events.emit("peerLeft", {
-          connection: conn
+          connection: conn,
         });
       }
     });
-    conn.on("data", data => {
+    conn.on("data", (data) => {
       if (JSON.parse(data).return) {
         events.emit("return", {
           connection: conn,
-          data: JSON.parse(data)
+          data: JSON.parse(data),
         });
       } else {
         events.emit("message", {
           connection: conn,
-          data: JSON.parse(data)
+          data: JSON.parse(data),
         });
       }
     });
@@ -160,6 +160,6 @@ export default class RTC {
 const signalingServer = {
   host: process.env.NODE_ENV === "production" ? "my.domain" : "localhost",
   port: process.env.NODE_ENV === "production" ? 443 : 3000,
-  path: "/peerjs"
+  path: "/peerjs",
 };
 Object.freeze(signalingServer);

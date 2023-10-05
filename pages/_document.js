@@ -39,7 +39,7 @@ export default class MyDocument extends Document {
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments)};
                 gtag('js', new Date());
-              `
+              `,
             }}
           />
           <link rel="icon" type="image/png" href="/static/favicon.ico" />

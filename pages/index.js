@@ -7,7 +7,7 @@ import Setup from "../components/Setup";
 
 export default class extends React.Component {
   state = {
-    visible: 0
+    visible: 0,
   };
 
   componentDidMount() {
@@ -29,7 +29,6 @@ export default class extends React.Component {
     var { visible } = this.state;
     return (
       <Layout>
-        {/* {console.log(this.state.form)} */}
         <SingleBox noBg active={visible === 1}>
           {/* <Logo src={"/static/logo.svg"} /> */}
           <Setup setChannel={this.setChannel} {...this.state} />
